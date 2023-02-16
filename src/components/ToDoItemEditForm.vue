@@ -2,7 +2,7 @@
     <form class="stack-small" @submit.prevent="onSubmit">
         <div>
             <label class="edit-label">Edit Name for &quot;{{ label }}&quot;</label>
-            <input :id="id" type="text" autocomplete="off" v-model.lazy.trim="newLabel" />
+            <input :id="id" type="text" autocomplete="off" ref="labelInput" v-model.lazy.trim="newLabel" />
         </div>
         <div class="btn-group">
             <button type="button" class="btn" @click="onCancel">
@@ -27,19 +27,25 @@ export default {
             type: String,
             required: true,
         },
-    },
+    },  
     data() {
         return {
             newLabel: this.label,
         };
     },
+    mounted(){
+        const labelInputRef = this.$refs.labelInput
+        labelInputRef.focus()
+    },
     methods: {
         onSubmit() {
+            ////提交按钮的判断方法并监听事件传递编写的参数：
             if (this.newLabel && this.newLabel !== this.label) {
                 this.$emit("item-edited", this.newLabel);
             }
         },
         onCancel() {
+            ////返回按钮的监听事件
             this.$emit("edit-cancelled");
         },
     },

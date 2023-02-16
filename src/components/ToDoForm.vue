@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="onSubmit">
         <label for="new-todo-input" class="label__lg">你需要添加的任务? </label>
-        <input type="text" id="new-todo-input" name="new-todo" autocomplete="off" v-model.trim.lazy="label"
+        <input type="text" id="new-todo-input" name="new-todo" ref="textInput" autocomplete="off" v-model.trim.lazy="label"
             class="input__lg" />
         <button type="submit" class="btn btn__primary btn__lg">添加</button>
     </form>
@@ -14,8 +14,7 @@ export default {
             if (this.label === '') {
                 return;
             }
-            console.log('label: ', this.label);
-            this.$emit("todo-added", this.label);
+            this.$emit("todo-added", this.label);   ////监听事件并传递参数
             this.label = "";
         },
     },
@@ -24,5 +23,9 @@ export default {
             label: "",
         };
     },
+    mounted(){
+        const textInputRef = this.$refs.textInput
+        textInputRef.focus()    ////添加焦点
+    }
 };
 </script>

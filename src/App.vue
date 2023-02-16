@@ -2,7 +2,7 @@
   <div id="app">
     <h1>我的任务清单</h1>
     <ToDoForm @todo-added="addToDo"></ToDoForm>
-    <h2 id="list-summary">{{listSummary}}</h2>
+    <h2 id="list-summary" ref="listSummary" tabindex="-1">{{listSummary}}</h2>
     <ul aria-labelledby="list-summary" class="stack-large">
       <li v-for="item in ToDoItems" :key="item.id">
         <to-do-item
@@ -41,23 +41,28 @@ export default {
   },
   methods: {
     addToDo(toDoLabel) {
-      console.log("toDoLabel:", toDoLabel);
+      ////添加任务
       this.ToDoItems.push({id: uniqueId("todo-"), label:toDoLabel, done: false })
     },
     updateDoneStatus(todoid) {
+      ////更新任务的状态
     const toDOtoUpdate = this.ToDoItems.find(item => item.id === todoid)
     toDOtoUpdate.done = !toDOtoUpdate.done
   },
     deleteToDo(toDoId){
+      ////删除任务
       this.ToDoItems = this.ToDoItems.filter(item => item.id !== toDoId)
+      this.$refs.listSummary.focus()
     },
     editToDo(toDoId,newLabel){
+      ////编辑任务
       const toDoToEdit = this.ToDoItems.find(item => item.id === toDoId)
       toDoToEdit.label = newLabel
     },
   },
   computed: {
-  listSummary() {
+    listSummary() {
+    ////统计任务的状态数量
     const numberFinishedItems = this.ToDoItems.filter(item =>item.done).length;
     return ` ${this.ToDoItems.length}个任务完成了${numberFinishedItems} `;
   },

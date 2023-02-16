@@ -11,7 +11,7 @@
       </div>
       
       <div class="btn-group">
-        <button type="button" class="btn" @click="toggleToItemEditForm">
+        <button type="button" class="btn" ref="editButton" @click="toggleToItemEditForm">
           编辑 <span class="visually-hidden">{{label}}</span>
         </button>
         <button type="button" class="btn btn__danger" @click="deleteToDo">
@@ -32,37 +32,56 @@ import uniqueId from "lodash.uniqueid";
 import ToDoItemEditForm from "./ToDoItemEditForm";
 export default {
     components:{
-        ToDoItemEditForm
+        ////注册组件
+        ToDoItemEditForm    
     },
     props: {
-        label: { require: true, type: String },
+        ////子组件传递给父组件的参数格式
+        label: { require: true, type: String },  
         done: { default: false, tpe: Boolean },
     },
     data() {
+        ////数据传递方法
         return {
             isEditing: false,
-            id: uniqueId("todo-"),
+            id: uniqueId("todo-"),  
         };
     },
     computed:{
+        ////数据计算并实时响应
         isDone(){
             return this.done
         },
     },
     methods:{
-        deleteToDo(){
+        deleteToDo(){   
+            ////监听删除按钮事件
             this.$emit('item-deleted')
         },
         toggleToItemEditForm(){
+            ////更改编辑状态
             this.isEditing = true
+
         },
         itemEdited(newLabel){
+            ////监听编辑按钮事件并传递参数，同时更改编辑状态和元素焦点
             this.$emit('item-edited', newLabel)
             this.isEditing = false
+            this.focusOnEditButton()
         },
         editCancelled(){
+            ////更改编辑状态同时更改元素焦点
             this.isEditing = false
+            this.focusOnEditButton()
         },
+        focusOnEditButton(){
+            ////在DOM更新的下个周期（否则ref未加载出来无法获取）更改元素焦点
+            this.$nextTick(() => {
+                const editButtonRef = this.$refs.editButton
+                editButtonRef.focus()
+            })
+            
+        }
     
     }
 };
